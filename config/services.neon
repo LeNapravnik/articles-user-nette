@@ -1,0 +1,28 @@
+services:
+	- App\Forms\FormFactory
+	- App\Forms\SignInFormFactory
+	- App\Forms\SignUpFormFactory
+	- App\Forms\ChangePasswordFormFactory
+	- App\Router\RouterFactory::createRouter
+	- App\Model\ArticleManager
+	authenticator: App\Model\UserManager
+	security.authorizator:
+		setup:
+			- addResource(Error)
+			- addResource(User)
+			- addResource(Article)
+
+			# Pravidla přístupu.
+			- allow(admin)
+			- allow(guest, Error)
+			- allow(guest, User, login)
+			- allow(guest, User, register)
+			- allow(guest, Article, default)
+			- allow(member, User, default)
+			- allow(member, User, logout)
+
+security:
+    roles:
+        guest:
+        member: [guest]
+        admin:

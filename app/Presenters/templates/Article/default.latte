@@ -1,0 +1,11 @@
+{block content}
+
+<h1 class="heading">Články</h1>
+
+<div class="clear"></div>
+<h2 n:if="$user->isLoggedIn()"><a n:href=User:default>Administrace</a></h2>
+<h2 n:if="!$user->isLoggedIn()"><a n:href=User:login>Přihlásit</a></h2>
+<h2 n:if="$user->isLoggedIn()"><a n:href=User:logout>Odhlásit</a></h2>
+
+{control datagrid}
+
