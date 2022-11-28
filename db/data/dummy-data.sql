@@ -189,7 +189,7 @@ INSERT INTO `article` SET
 
 
 -- ----------------------------
--- user records /heslo: 1234567
+-- user records /password: 1234567
 -- ----------------------------
 INSERT INTO `user` SET
     `id` = 1,

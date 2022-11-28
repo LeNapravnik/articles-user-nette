@@ -9,7 +9,7 @@ use Nette\Application\UI\Form;
 use Nette\Security\User;
 
 /**
- * Továrna na přihlašovací formulář.
+ * Sign in form factory
  */
 final class SignInFormFactory {
 	use Nette\SmartObject;

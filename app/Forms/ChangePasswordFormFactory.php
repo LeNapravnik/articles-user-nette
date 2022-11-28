@@ -11,7 +11,7 @@ use App\Model\UserManager;
 use Nette\Security\User;
 
 /**
- * Továrna na registrační formulář.
+ * Change password form factory
  */
 final class ChangePasswordFormFactory {
 	use Nette\SmartObject;

@@ -10,7 +10,7 @@ use Nette\Application\UI\Form;
 use App\Model\UserManager;
 
 /**
- * Továrna na registrační formulář.
+ * Sign up form factory
  */
 final class SignUpFormFactory {
 	use Nette\SmartObject;
