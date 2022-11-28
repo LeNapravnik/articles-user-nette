@@ -10,7 +10,7 @@ use Nette\Application\UI\Form;
 use Nette\Application\AbortException;
 
 /**
- * Presenter pro administraci
+ * Presenter for user administration
  */
 final class UserPresenter extends BasePresenter {
 	/** @persistent */
@@ -29,14 +29,14 @@ final class UserPresenter extends BasePresenter {
 	}
 
   	/**
-   	 * Pokud je uživatel již přihlášen, přesměruje na články
-   	 * @throws AbortException Když dojde k přesměrování.
+   	 * Logged user is redirected to article page
+   	 * @throws AbortException when redirected
    	*/
   	public function actionLogin() {
     	if ($this->getUser()->isLoggedIn()) $this->redirect('Article:default');
   	}
 
-  	/** Předá jméno přihlášeného uživatele do šablony administrační stránky. */
+  	/** Passes logged user name on to user administration template */
   	public function renderDefault() {
     	if ($this->getUser()->isLoggedIn()) {
       		$this->template->username = $this->user->identity->username;
@@ -44,7 +44,7 @@ final class UserPresenter extends BasePresenter {
   	}
 
 	/**
-	 * Vytvoří a vrátí přihlašovací formulář
+	 * Renders and returns sign in form
 	 */
 	protected function createComponentSignInForm(): Form {
 		return $this->signInFactory->create(function (): void {
@@ -55,7 +55,7 @@ final class UserPresenter extends BasePresenter {
 	}
 
 	/**
-	 * Vytvoří a vrátí registrační formulář
+	 * Renders and returns sign up form
 	 */
 	protected function createComponentSignUpForm(): Form {
 		return $this->signUpFactory->create(function (): void {
@@ -64,6 +64,9 @@ final class UserPresenter extends BasePresenter {
 		});
 	}
 
+	/**
+	 * For logged user renders and returns form for changing password
+	 */
 	protected function createComponentEditPasswordForm(): Form {
 		if ($this->getUser()->isLoggedIn()) {
 			return $this->changePasswordFactory->create(function (): void {
@@ -74,8 +77,8 @@ final class UserPresenter extends BasePresenter {
 	}
 
   	/**
-   	 * Odhlásí uživatele a přesměruje na přihlašovací stránku.
-     * @throws AbortException Při přesměrování na přihlašovací stránku.
+   	 * Logs user out and redirects to sign in page
+     * @throws AbortException when redirected to sign in page
      */
 	public function actionLogout(): void {
 		$this->getUser()->logout();
