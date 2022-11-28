@@ -1,4 +1,5 @@
-CREATE DATABASE IF NOT EXISTS nubium_db;
+CREATE DATABASE IF NOT EXISTS articles_db;
+USE articles_db;
 
 CREATE TABLE IF NOT EXISTS `article` (
     `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT , 
@@ -9,7 +10,8 @@ CREATE TABLE IF NOT EXISTS `article` (
     `insertion_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     `rating` INT NULL DEFAULT '0', 
     `visibility` ENUM('all_users','logged_users') NOT NULL DEFAULT 'all_users' , 
-    PRIMARY KEY (`id`)) ENGINE = InnoDB;
+    PRIMARY KEY (`id`) ,
+    UNIQUE `link` (`link`) USING BTREE) ENGINE = InnoDB;
     
 CREATE TABLE IF NOT EXISTS `user` (
     `id` INT(11) NOT NULL AUTO_INCREMENT , 
@@ -19,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `user` (
     `role` ENUM('admin','member') NOT NULL DEFAULT 'member', 
     `registration_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , 
     `active` BOOLEAN NOT NULL DEFAULT TRUE , 
-    PRIMARY KEY (`id`), 
+    PRIMARY KEY (`id`) , 
     UNIQUE `username` (`username`) USING BTREE) ENGINE = InnoDB;
     
 CREATE TABLE IF NOT EXISTS `rating` (
@@ -27,4 +29,6 @@ CREATE TABLE IF NOT EXISTS `rating` (
     `article_id` INT(11) UNSIGNED NOT NULL , 
     `user_id` INT(11) UNSIGNED NOT NULL , 
     `value` INT NOT NULL , 
-    `time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ) ENGINE = InnoDB;
+    `time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+    PRIMARY KEY (`id`) ,
+    UNIQUE KEY `article_user` (`article_id`,`user_id`) USING BTREE) ENGINE = InnoDB;
