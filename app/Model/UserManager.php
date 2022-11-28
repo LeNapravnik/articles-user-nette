@@ -9,7 +9,7 @@ use Nette\Security\Passwords;
 use Nette\Database\Explorer;
 
 /**
- * Users management.
+ * Model for managing users
  */
 final class UserManager implements Nette\Security\Authenticator {
 	use Nette\SmartObject;
@@ -36,7 +36,7 @@ final class UserManager implements Nette\Security\Authenticator {
 	}
 
 	/**
-	 * Provede přihlášení uživatele do systému
+	 * Executes user sign in
 	 * @throws Nette\Security\AuthenticationException
 	 */
 	public function authenticate(string $username, string $password): Nette\Security\SimpleIdentity {
@@ -63,7 +63,7 @@ final class UserManager implements Nette\Security\Authenticator {
 
 
 	/**
-	 * Přidá nového uživatele
+	 * Adds new user
 	 * @throws DuplicateNameException
 	 */
 	public function add(string $username, string $email, string $password): void {
@@ -80,7 +80,7 @@ final class UserManager implements Nette\Security\Authenticator {
 	}
 
 	/**
-	 * Změní heslo uživatele
+	 * Changes user password
 	 * 
 	 */
 	public function changePassword(int $user_id, string $password): void {
@@ -95,6 +95,6 @@ final class UserManager implements Nette\Security\Authenticator {
 }
 
 class DuplicateNameException extends \Exception {
-	// Nastavení chybové zprávy.
+	// error message setting
     protected $message = 'Uživatel s tímto jménem již existuje.';
 }
