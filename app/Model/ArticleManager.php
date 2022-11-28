@@ -94,23 +94,24 @@ class ArticleManager {
             ->where('user_id', $user_id)
             ->fetch();
 
-        $was_rated = $user_rating['id'];
-
-        if(!$was_rated){
-        $this->database->table('rating')
-            ->insert([
-                'article_id' => $article_id,
-                'user_id' => $user_id,
-                'value' => $rating
-            ]);
+        if(!$user_rating){
+            $this->database->table('rating')
+                ->insert([
+                    'article_id' => $article_id,
+                    'user_id' => $user_id,
+                    'value' => $rating
+                ]);
         
-        $article_rating += $rating;
+            $article_rating += $rating;
 
-        $this->database->table(self::TABLE_NAME)
+            $this->database->table(self::TABLE_NAME)
                 ->where(self::COLUMN_ID, $article_id)
                 ->update(['rating' => $article_rating]);
+            return true;
         }
-         
+        else{
+            return false;
+        }  
     }
 
     /**

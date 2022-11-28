@@ -7,11 +7,10 @@ namespace App\Presenters;
 use Nette,
 	App\Model;
 use Nette\Application\UI\Form;
-//use App\Grids\Grid;
 use Ublaboo\DataGrid\DataGrid;
 
 /**
- * Presenter pro články
+ * Presenter for articles
  */
 class ArticlePresenter extends BasePresenter {
   
@@ -25,8 +24,8 @@ class ArticlePresenter extends BasePresenter {
   /** --- DATAGRIDS --- **/
 	
 	/**
-	 * Datagrid seznam článků
-	 * @param type $name
+	 * Datagrid for article list
+	 * @param type $name name of grid
 	 * @return Grid
 	 */
 	public function createComponentDatagrid($name) {
@@ -35,7 +34,7 @@ class ArticlePresenter extends BasePresenter {
       $articles = $this->articleManager->GetAllArticles();
     }
     else{
-      $articles = $this->articleManager->getArticlesForLoggedUsers();
+      $articles = $this->articleManager->getArticlesForAllUsers();
     }
 
 	  $grid = new DataGrid($this, $name);
@@ -58,10 +57,11 @@ class ArticlePresenter extends BasePresenter {
         ->setFilterText();
 
     $grid->addColumnText('description', 'Perex');  
-    $grid->addColumnText('content', 'text článku'); 
+    $grid->addColumnText('content', 'text článku');
+      //  ->setTemplateEscaping(FALSE);
 
     $grid->addAction('all_users', 'Všem')->setRenderer(function($item) {
-      // u článků s nastavenou viditelností 'logged_users' zobrazí tlačítko pro nastavení viditelnosti 'all_users'
+      // for articles with visibility setted to 'logged_users' shows button for setting visibility to 'all_users'
       if($item->visibility === 'logged_users'){
         $all = \Nette\Utils\Html::el('a')
                                     ->href($this->presenter->link('setVisibility!', [$item->id, 'all_users']))
@@ -70,8 +70,9 @@ class ArticlePresenter extends BasePresenter {
           return $all;
         }
     });
-    // u článků s nastavenou viditelností 'all_users' zobrazí tlačítko pro nastavení viditelnosti 'logged_users'
+    
     $grid->addAction('logged_users', 'Přihlášeným')->setRenderer(function($item) {
+      // for articles with visibility setted to 'all_users' shows button for setting visibility to 'logged_users'
       if($item->visibility === 'all_users'){
         $logged = \Nette\Utils\Html::el('a')
                                     ->href($this->presenter->link('setVisibility!', [$item->id, 'logged_users']))
@@ -82,7 +83,7 @@ class ArticlePresenter extends BasePresenter {
       }
     });
 
-    // přihlášeným uživatelům zobrazí možnost hodnotit článek
+    // viewing possibilities to rate article for logged user
     if ($this->getUser()->isLoggedIn()) {
       $grid->addAction('like', 'Like')->setRenderer(function($item) {
         $like = \Nette\Utils\Html::el('a')
@@ -103,22 +104,31 @@ class ArticlePresenter extends BasePresenter {
 	}
 
   /**
-     * uloží hodnocení k článku
-  */
+    * Saves rating
+    * @param int $id article id
+    * @param int $rating rating value
+    */
   public function handleRate($id, $rating) {
     $user_id = $this->getUser()->getId();
     $article_id = (int) $id;
     $rating = (int) $rating;
 
-    $this->articleManager->saveArticleRating($article_id, $user_id, $rating);
+    $rated = $this->articleManager->saveArticleRating($article_id, $user_id, $rating);
 
-    $this->flashMessage( "Hodnocení bylo uloženo", "success" );
-    $this->redirect( "default" );
+    if($rated){
+      $this->flashMessage( "Hodnocení bylo uloženo", "success" );
+    }
+    else {
+      $this->flashMessage( "Článek nelze hodnotit opakovaně", "danger" );
+    }
+    $this->redrawControl();
   }
 
   /**
-     * uloží nastavení viditelnosti článku
-  */
+    * Sets article visibility
+    * @param int $id article id
+    * @param string $visibility visibility value
+    */
   public function handleSetVisibility($id, $visibility) {
     $article_id = (int) $id;
 
